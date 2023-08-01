@@ -22,5 +22,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('upload-attendance', 'App\Http\Controllers\AttendanceController@upload');
 
 
+Route::get('employee/attendance', 'App\Http\Controllers\AttendanceController@all');
 Route::get('employee/{id}/attendance', 'App\Http\Controllers\AttendanceController@show');
 

@@ -5,43 +5,42 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\HumanResources\Attendance\Application\AttendanceImport;
-use App\HumanResources\Attendance\Domain\Attendance;
-use Carbon\Carbon;
+use App\HumanResources\Attendance\Application\AttendanceService;
+
 class AttendanceController extends Controller
 {
     //
 
+    protected $attendanceService;
 
-    public function upload(Request $request)
-{
-    $request->validate([
-        'file' => 'required|mimes:xls,xlsx'
-    ]);
-
-    $file = $request->file('file');
-    Excel::import(new AttendanceImport, $file);
-
-    return response()->json(['message' => 'Attendance uploaded successfully'], 200);
-}
-
-
-public function show($id)
-{
-    $attendances = Attendance::where('employee_id', $id)->get();
-
-    $totalHours = 0;
-    foreach ($attendances as $attendance) {
-        $timeIn = Carbon::parse($attendance->time_in);
-        $timeOut = Carbon::parse($attendance->time_out);
-        $totalHours += $timeOut->diffInHours($timeIn);
+    public function __construct(AttendanceService $attendanceService)
+    {
+        $this->attendanceService = $attendanceService;
     }
 
-    return response()->json([
-        'employee_id' => $id,
-        'attendances' => $attendances,
-        'total_working_hours' => $totalHours
-    ], 200);
-}
+
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx'
+        ]);
+
+        $file = $request->file('file');
+        Excel::import(new AttendanceImport, $file);
+
+        return response()->json(['message' => 'Attendance uploaded successfully'], 200);
+    }
 
 
+    public function all()
+    {
+        $data = $this->attendanceService->AllEmpcalculateWorkingHours();
+        return response()->json($data, 200);
+    }
+
+    public function show($id)
+    {
+        $data = $this->attendanceService->calculateWorkingHours($id);
+        return response()->json($data, 200);
+    }
 }

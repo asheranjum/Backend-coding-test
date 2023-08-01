@@ -4,7 +4,7 @@
 namespace App\HumanResources\Attendance\Domain;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\HumanResources\Attendance\Domain\Employee;
 class Attendance extends Model
 {
     protected $fillable = [
@@ -14,6 +14,14 @@ class Attendance extends Model
         'time_in',
         'time_out'
     ];
+
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, 'employee_id');
+    }
+
+
 }
 
 ?>
