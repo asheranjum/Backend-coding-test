@@ -17,3 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::post('upload-attendance', 'App\Http\Controllers\AttendanceController@upload');
+
+
+Route::get('employee/{id}/attendance', 'App\Http\Controllers\AttendanceController@show');
+
